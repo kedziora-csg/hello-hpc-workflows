@@ -1,0 +1,44 @@
+name: MPI Hello World
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: hello-mpi
+  MPI_RANKS: 4
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t "$IMAGE_NAME" .
+
+      - name: Run MPI program and capture output
+        run: |
+          docker run --rm "$IMAGE_NAME" \
+            mpirun --allow-run-as-root -n "$MPI_RANKS" /app/hello_mpi \
+            | tee mpi-output.log
+
+      - name: Verify all ranks printed output
+        run: |
+          count=$(grep -c "Hello from rank" mpi-output.log || true)
+          if [ "$count" -ne "$MPI_RANKS" ]; then
+            echo "Expected $MPI_RANKS rank lines, got $count"
+            exit 1
+          fi
+
+      - name: Upload MPI output log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mpi-output
+          path: mpi-output.log
