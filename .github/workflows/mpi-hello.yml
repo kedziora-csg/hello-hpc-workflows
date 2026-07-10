@@ -22,10 +22,23 @@ jobs:
       - name: Build Docker image
         run: docker build -t "$IMAGE_NAME" .
 
+      - name: Show runner and container CPU info
+        run: |
+          echo "Runner CPU count (nproc): $(nproc)"
+          echo "Runner CPU summary:"
+          lscpu | grep -E '^CPU\(s\):|^Model name:|^Thread\(s\) per core:|^Core\(s\) per socket:|^Socket\(s\):' || true
+          echo
+          echo "Container CPU count (nproc):"
+          docker run --rm "$IMAGE_NAME" nproc
+          echo "Container cpuset (if present):"
+          docker run --rm "$IMAGE_NAME" sh -lc 'cat /sys/fs/cgroup/cpuset.cpus.effective 2>/dev/null || cat /sys/fs/cgroup/cpuset/cpuset.cpus 2>/dev/null || true'
+          echo "Container cpu.max (if present):"
+          docker run --rm "$IMAGE_NAME" sh -lc 'cat /sys/fs/cgroup/cpu.max 2>/dev/null || true'
+
       - name: Run MPI program and capture output
         run: |
           docker run --rm "$IMAGE_NAME" \
-            mpirun --allow-run-as-root -n "$MPI_RANKS" /app/hello_mpi \
+            mpirun --allow-run-as-root --oversubscribe -n "$MPI_RANKS" /app/hello_mpi \
             | tee mpi-output.log
 
       - name: Verify all ranks printed output
