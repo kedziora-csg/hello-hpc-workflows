@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build Docker image
         run: docker build -t "$IMAGE_NAME" .
@@ -38,7 +38,7 @@ jobs:
 
       - name: Upload MPI output log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: mpi-output
           path: mpi-output.log

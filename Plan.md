@@ -8,6 +8,11 @@ Compile and run an MPI "Hello World" program using GitHub Actions, demonstrating
 
 ## Plan
 
+### 0. One-Time Repository Setup (outside GitHub Actions)
+- Initialize a local Git repository.
+- Create a remote repository on GitHub.
+- Push project files so GitHub Actions can run workflows.
+
 ### 1. MPI Hello World Source Code
 - Write a simple `hello_mpi.c` program that uses `MPI_Init`, `MPI_Comm_rank`, `MPI_Comm_size`, and `MPI_Finalize` to print a greeting from each MPI rank.
 
@@ -19,7 +24,10 @@ Compile and run an MPI "Hello World" program using GitHub Actions, demonstrating
 
 ### 3. GitHub Actions Workflow
 - Create `.github/workflows/mpi-hello.yml`.
-- Steps:
+- Local authoring order:
+  1. Create `.github/workflows/mpi-hello.yml` in this repository.
+  2. Commit and push to GitHub.
+- Workflow runtime order (inside GitHub Actions):
   1. Check out the repository.
   2. Build the Docker image.
   3. Run the container with `mpirun -n <N> ./hello_mpi` and capture output.
