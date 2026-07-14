@@ -1,4 +1,4 @@
-name: MPI Hello World
+name: MPI Hello World Large
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
       - name: Run MPI program and capture output
         run: |
           docker run --rm "$IMAGE_NAME" \
-            mpirun --allow-run-as-root -n "$MPI_RANKS" /app/hello_mpi \
+            mpirun --allow-run-as-root --oversubscribe -n "$MPI_RANKS" /app/hello_mpi \
             | tee mpi-output.log
 
       - name: Verify all ranks printed output
