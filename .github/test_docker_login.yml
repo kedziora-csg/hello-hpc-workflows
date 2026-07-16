@@ -1,0 +1,27 @@
+name: Test Docker Login
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+
+jobs:
+  docker-auth-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Test Authentication
+        run: |
+          echo "Testing Docker pull to verify authentication..."
+          # Pulling a private image is the best test, but if you don't have one, 
+          # checking docker info or pulling a rate-limited public image works.
+          docker info
