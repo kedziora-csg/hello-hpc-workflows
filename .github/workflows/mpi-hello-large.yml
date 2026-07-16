@@ -1,10 +1,6 @@
 name: MPI Hello World Large
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 env:
