@@ -1,4 +1,4 @@
-name: MPI Hello World
+name: MPI Hello World Publish
 
 on:
   push:
