@@ -1,9 +1,6 @@
 name: Test Docker Login
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch: # Allows you to run this manually from the Actions tab
 
 jobs:
